@@ -9,7 +9,7 @@ library(tidytext)
 library(rnaturalearth)
 
 ## load data
-load("data/bbnj_dat.rda")
+load("data/02_tidy_data/bbnj_dat.rda")
 load("data/ohi.rda")
 
 ## splitting
