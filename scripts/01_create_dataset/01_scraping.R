@@ -102,7 +102,7 @@ speech_dat <- speaker_data %>%
   left_join(speech_data, by = "link")
 
 ## save to rds
-saveRDS(speech_dat, file = "data/speech_dat.rds")
+saveRDS(speech_dat, file = "data/02_tidy_data/speech_dat.rds")
 
 ## helpful sources
 #### https://oceanhealthindex.org/news/scraping_webpages_and_pdfs/

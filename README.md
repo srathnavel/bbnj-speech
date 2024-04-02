@@ -3,6 +3,8 @@
 
 This project models ocean health within a country's marine jurisdiction (as measured by the Ocean Health Index) using the country's speeches at meetings of the UN Biodiversity Beyond National Jurisdictions conference.
 
-I scraped the speech data from the BBNJ website and downloaded and read in the contents of speech pdf documents. I used spacy to process the text in the scraped and tidied dataset (include lemmatization and part of speech tagging).
+I scraped the speech pdf data from the BBNJ website and read in the contents of each pdf. I used spacy to process the text in the scraped and tidied dataset, including lemmatization (finding the root word) and part of speech tagging. The cleaned dataset is quite small - it comprises 100 speeches in English given by only 40 distinct countries.
 
-I created this because I've been interested in BBNJ agreement progress over the last few years. The project is still in progress - I finished most of the modelling but haven't finished a complete writeup yet. Better file organization also to come.
+I set up and trained 3 model types (random forest, linear, k-nearest neighbors). The random forest model performed best - albeit with R-squared of less than 0.25. This model was fitted to the reserved test data to generate predictions (on only 30 speeches, 30% of the dataset).
+
+I mapped error (RMSE) and found that the model is worse at predicting ocean health index scores for smaller island countries. Error is higher for Sri Lanka and parts of Polynesia. Important lemmas included: "conservation", "instrument", "capacity building", and "transfer technology".

@@ -9,9 +9,9 @@ library(cld2)
 spacy_install()
 
 #### lemmatize speech data ####
-speech_dat <- readRDS("data/speech_dat.rds")
+speech_dat <- readRDS("data/02_tidy_data/speech_dat.rds")
 
-## general lemmatize data function (for use in lemmatize_data)
+# general lemmatize data function
 parse_tokens <- function(doc) {
   
   spacy_parse(doc, pos = TRUE, entity = FALSE) %>% 
@@ -63,4 +63,4 @@ speech_lemmas %>% count(language)
 speech_lemmas <- speech_lemmas %>%
   filter(language == "en")
 
-save(speech_lemmas, file = "data/speech_lemmas.rds")
+save(speech_lemmas, file = "data/02_tidy_data/speech_lemmas.rds")
