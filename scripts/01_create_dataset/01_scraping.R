@@ -6,7 +6,7 @@ library(here)
 library(rvest)
 library(pdftools)
 
-#### scrape tables to get pdf links ####
+#### scrape tables to get links to each speech pdf ####
 
 # read in webpages
 page1 <- read_html("https://www.un.org/bbnj/statements-first-session")
@@ -17,13 +17,12 @@ page5 <- read_html("https://www.un.org/bbnj/statements-fifth-session")
 
 pages <- list(page1, page2, page3, page4, page5)
 
-# empty dataframe to populate
+# empty dataframe to populate with link information
 speaker_data <- data.frame()
 
-# extract tables
 for (page in pages) {
   
-  # find all nodes in a table with a link
+  # find all nodes inside a table containing a link
   link_nodes <- page %>% 
     html_nodes(xpath = "//table//a")  
   
@@ -49,29 +48,29 @@ for (page in pages) {
                ## link itself
                link = link_nodes %>% html_attr("href"))
   
-  # append row to dataframe
+  # append row to speaker_data
   speaker_data <- rbind(speaker_data, df)
   
 }
 
-# clear everything except speaker data from global env
+# clear everything except speaker data from global environment
 rm(list = ls()[! ls() %in% c("speaker_data")])
 
-#### reading pdf files ####
+#### reading text of pdf files ####
 
-# dataset to be populated
+# empty dataframe to be populated with speech information
 speech_data <- data.frame()
 
 # read text of each pdf into tabular format
 for (i in list(speaker_data$link)) {
   # create and name temporary directory
-  pdf_dir <- here(paste0("temp/"))
-  dir.create(pdf_dir)
+  pdf_data <- here(paste0("temp/"))
+  dir.create(pdf_data)
   
   # download files to directory
   raw_list <- i %>%
     walk2(.,
-          paste0(pdf_dir, 
+          paste0(pdf_data, 
                  "/" ,
                  "bbnj_",
                  ## shorten filenames
@@ -82,20 +81,21 @@ for (i in list(speaker_data$link)) {
   # find all downloaded files
   files <- list.files(here("temp"), pattern = "\\.pdf$")
   
-  # add path to file name
+  # add paths to file name
   files_dir <- paste("temp/", files, sep = "")
   
   # read in text from each pdf file
   for (i in 1:length(files)) {
+    # create row with pdf filename and pdf text
     curr <- data.frame(link = files_dir[i],
                        text = paste(pdf_text(files_dir[i]), collapse = " "))
     
-    # append to dataframe
+    # append row to speech_data
     speech_data <- rbind(speech_data, curr)
   }
   
-  # remove created directory and files
-  unlink(pdf_dir, recursive = TRUE)
+  # remove created directory and pdfs
+  unlink(pdf_data, recursive = TRUE)
   
 }
 
