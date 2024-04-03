@@ -26,7 +26,6 @@ for (page in pages) {
   link_nodes <- page %>% 
     html_nodes(xpath = "//table//a")  
   
-  # get linked text
   link_text  <- link_nodes %>% html_text()
   
   delegation <- link_nodes %>% 
@@ -40,15 +39,12 @@ for (page in pages) {
     html_elements(xpath = "//table//a/ancestor::td/preceding-sibling::td[1]") %>%
     html_text()
   
-  # create a row
   df <- tibble(delegation = delegation, 
                date = date,
-               ## text of the link
                link_text = link_nodes %>% html_text(),
-               ## link itself
                link = link_nodes %>% html_attr("href"))
   
-  # append row to speaker_data
+  # append link information as a row to speaker_data
   speaker_data <- rbind(speaker_data, df)
   
 }
@@ -58,11 +54,11 @@ rm(list = ls()[! ls() %in% c("speaker_data")])
 
 #### reading text of pdf files ####
 
-# empty dataframe to be populated with speech information
 speech_data <- data.frame()
 
-# read text of each pdf into tabular format
+# reading text of each pdf into tabular format
 for (i in list(speaker_data$link)) {
+  
   # create and name temporary directory
   pdf_data <- here(paste0("temp/"))
   dir.create(pdf_data)
@@ -80,17 +76,14 @@ for (i in list(speaker_data$link)) {
   
   # find all downloaded files
   files <- list.files(here("temp"), pattern = "\\.pdf$")
-  
-  # add paths to file name
   files_dir <- paste("temp/", files, sep = "")
   
   # read in text from each pdf file
   for (i in 1:length(files)) {
-    # create row with pdf filename and pdf text
     curr <- data.frame(link = files_dir[i],
                        text = paste(pdf_text(files_dir[i]), collapse = " "))
     
-    # append row to speech_data
+    # append as a row to speech_data
     speech_data <- rbind(speech_data, curr)
   }
   
@@ -102,9 +95,7 @@ for (i in list(speaker_data$link)) {
 #### join to create full speech dataset ####
 
 speech_dat <- speaker_data %>%
-  # shorten links to match
   mutate(link = str_replace(link, "https://www.un.org/bbnj/sites/www.un.org.bbnj/files/", "temp/bbnj_")) %>%
   left_join(speech_data, by = "link")
 
-# save to rds
 saveRDS(speech_dat, file = "data/02_tidy_data/speech_dat.rds")
