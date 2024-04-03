@@ -7,4 +7,4 @@ I scraped the speech pdf data from the BBNJ website and read in the contents of 
 
 I set up and trained 3 model types (random forest, generalized linear, k-nearest neighbors). The random forest model performed best - albeit with an R-squared of less than 0.25. This model was fitted to the reserved test data to generate predictions (on only 30 speeches, 30% of the dataset).
 
-I mapped error (RMSE) and found that the model is worse at predicting ocean health scores for smaller island countries. Error is higher for Sri Lanka and parts of Polynesia. Important phrases (lemmas) included: "conservation", "instrument", "capacity building", and "transfer technology".
+I mapped error (RMSE) and found that the model is worse at predicting ocean health scores for smaller island countries. Error is higher for Sri Lanka and parts of Polynesia. Important phrases (lemmas) found using variable importance plotting included: "conservation", "instrument", "capacity building", and "transfer technology".
